@@ -9,25 +9,35 @@ A = 1; % Amplitude
 K = 1; % ??
 d = 1; % second
 
-% t = 0:1/fs:d;
-t = linspace(0, d, d*fs + 1);
+% Time vector
+t = linspace(0, d, d*fs);
 
-% Original signal (to be modulated)
+% Message signal (to be modulated)
 m = 0.5*cos(2*pi*f_info*t);
 
 % Plot original signal
-tfplot(m, fs, [' 0.5*cos(2*pi*' f_info '*t)'], 'Original signal');
-pause;
+% tfplot(m, fs, 'm', 'Original signal');
+% pause;
+
+% Plot absolute value of signal
+% tfplot(abs(m), fs, 'abs(m)', 'Absolute value of signal');
+% pause;
 
 % AM-modulate the signal s
 s = my_ammod(m, K, A, fc, fs);
+% s = sol_ammod(m, K, A, fc, fs);
+
+
+% tfplot(abs(s), fs, 'abs(s)', 'Absolute value of modulated signal');
+% pause;
 
 % Plot AM-modulated signal
-tfplot(s, fs, '', 'Modulated signal');
-pause;
-m_recovered = my_amdemod(s, fc, fs);
+% tfplot(s, fs, 's', 'Modulated signal');
+% pause;
 
-tfplot(m_recovered, fs, '', 'Demodulated signal');
+m_recovered = my_amdemod(s, fc, fs);
+% m_recovered = sol_amdemod(s, fc, fs);
+tfplot(m_recovered, fs, 'mdemod', 'Demodulated signal');
 
 
 end

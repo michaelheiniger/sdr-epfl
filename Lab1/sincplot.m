@@ -9,12 +9,12 @@ DURATION = 0.05;
 B = 1000;
 
 % Set time and frequency scales
-t = linspace(0, DURATION, DURATION*F_SAMPLE + 1);
+t = linspace(0, DURATION, DURATION*F_SAMPLE+1);
 
 % Define the signal
 m = sinc(B*(t - max(t)/2));
 
 % Plot
-%sol_tfplot(m,F_SAMPLE,'m','A sinc signal')
-%pause;
+sol_tfplot(m,F_SAMPLE,'m','A sinc signal')
+pause;
 tfplot(m,F_SAMPLE,'m','A sinc signal')

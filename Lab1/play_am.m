@@ -13,6 +13,8 @@ m = my_amdemod(am_signal, fc, fs);
 
 m_downsampled = downsample(m, downsample_factor);
 
+tfplot(m_downsampled, fs, 'mdemod', 'Demodulated signal');
+
 % Keeps only the real value
 real_downsampled_m = real(m_downsampled);
 
