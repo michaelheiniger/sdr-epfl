@@ -8,18 +8,23 @@ A = 1;
 K = 1;
 filter_order = 2;
 
-% Take absolute value of the signal
+% Get the envelope of the signal
 s_abs = abs(s)/A;
 
-%Apply low-pass filter to keep only one copy of e(t)
-[b,a] = butter(filter_order,fc/(fs/2),'low'); % ??? 
+%Apply low-pass filter to keep only the baseband copy of e(t)
+[b,a] = butter(filter_order,fc/(fs/2),'low'); 
 e = filter(b,a,s_abs);
-
 
 m = (e-1)/K;
 
-m_normalized = m/max(abs(min(m)),abs(max(m)));
-% m_normalized = m;
+m_normalized = normalize_minus_one_to_plus_one(m);
+
+% Normalize the provided sequence with values in [-1;+1]
+function normalized = normalize_minus_one_to_plus_one(data)
+    minimum = min(data);
+    maximum = max(data);
+    normalized = 2*(data - minimum)/(maximum - minimum) - 1;
+end
 
 end
 
