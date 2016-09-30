@@ -9,7 +9,7 @@ if (not(is_number_integer(log2(M))) || M <= 1)
     error('M must be a power of 2 greater than than 1');
 end
 
-step = 360/M
+step = 360/M;
 angles = 0:step:360-step;
 cosines = cosd(angles);
 sines = sind(angles);

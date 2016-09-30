@@ -8,13 +8,13 @@ function [ Y ] = my_modulator( X, MAP )
 % If the length of MAP is M, then the message symbols of X
 % must be integers between 0 and M-1.
 
-check = sum(arrayfun(@(x) x < 0 || x > length(MAP)-1, X))
+check = sum(arrayfun(@(x) x < 0 || x > length(MAP)-1, X));
 
 if check > 0
      error('Symbols of X must be in [0;M-1]');
 end
 
-arrayfun(@(x) MAP(x), X+1)
+Y = arrayfun(@(x) MAP(x), X+1);
 
 end
 
