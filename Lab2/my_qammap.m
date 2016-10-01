@@ -13,14 +13,12 @@ if (not(is_number_integer(log2(sqrt(M)))) || M <= 1)
 end
 
 
-max_coordinate = (log2(M)-1);
+max_coordinate = sqrt(M)-1;
 
 [Y,X] = ndgrid(max_coordinate:-2:-max_coordinate,-max_coordinate:2:max_coordinate);
 
-QAM = X + i*Y;
-
+QAM = X + 1i*Y;
 C = reshape(QAM, 1, M);
-
 
 function result = is_number_integer(n)
     result = (mod(n,1) == 0);
