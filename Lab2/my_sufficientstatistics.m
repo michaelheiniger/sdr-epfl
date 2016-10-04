@@ -7,18 +7,20 @@ function [ X ] = my_sufficientstatistics( R, H, USF )
 % the integer USF, which is the ratio between the sampling rate and the
 % symbol rate (upsampling factor)
 
-
-% G[n] = H*[-n] 
+% G[n] = H*[-n]
 G = conj(fliplr(H));
 
-
-
+% Convolution between the received signal R and the matched filter 
+% (which is not causal, see delay correction below)
 Y = conv(R,G);
 
-delay = (length(H)-1)/2 * 2; 
+% Accounts for both the original pulse and its counterpart used for the 
+% matched filter 
+delay = length(H) - 1; 
 
-% Downsample the signal removing transients
-X = Y(delay+1:USF:end-delay); 
+% Downsample the signal to account for the upsampling in
+% my_symbols2samples.m
+X = Y(delay+1:USF:length(Y)-delay); 
 
 
 

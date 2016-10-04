@@ -11,7 +11,7 @@ function [ Z ] = my_demodulator( Y, MAP )
 % 0 and M=length(MAP)-1.
 
 % Check row/column vector for Y
-[rows, cols] = size(Y);
+[~, cols] = size(Y);
 transpose = 0;
 if cols == 1
    transpose = 1;
@@ -26,7 +26,7 @@ MAP_rep = repmat(MAP, length_Y, 1);
 % Compute distances
 distances = euclidean_distance(Y_rep, MAP_rep);
 
-[values, indice] = min(distances, [], 2);
+[~, indice] = min(distances, [], 2);
 
 Z = indice-1; %Since MAP values are from 0 and not 1
 
