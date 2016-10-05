@@ -17,7 +17,7 @@ angles = 0:step:360-step;
 cosines = cosd(angles);
 sines = sind(angles);
 
-C = cosines + 1i*sines;
+C = complex(cosines + 1i*sines);
 
 function result = is_number_integer(n)
     result = (mod(n,1) == 0);

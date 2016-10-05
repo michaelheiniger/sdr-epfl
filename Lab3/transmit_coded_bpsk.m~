@@ -34,10 +34,10 @@ S_coded = convenc(S, trellis);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 BPSK = sol_pskmap(2);
 
-S_mod = my_modulator(S_coded, BPSK);
+S_mod = _modulator(S_coded, BPSK);
 S_mod_noisy = awgn(S_mod, Es_sigma2);
 
-S_demod = my_demodulator(S_mod_noisy, BPSK);
+S_demod = sol_demodulator(S_mod_noisy, BPSK);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Viterbi decoding

@@ -12,9 +12,9 @@ function [ Z ] = my_demodulator( Y, MAP )
 
 % Check row/column vector for Y
 [rows, ~] = size(Y);
-transpose_needed = 0;
+transpose = 1;
 if rows == 1
-   transpose_needed = 1;
+   transpose = 0;
    Y = transpose(Y);
 end
 
@@ -30,7 +30,7 @@ distances = euclidean_distance(Y_rep, MAP_rep);
 
 Z = indice-1; %Since MAP values are from 0 and not 1
 
-if transpose_needed
+if transpose
     Z = transpose(Z);
 end
 

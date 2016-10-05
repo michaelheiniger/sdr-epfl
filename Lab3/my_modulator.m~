@@ -16,8 +16,8 @@ function [ Y ] = my_modulator( X, MAP )
 
 % Check if X is a column-vector 
 if (size(X, 2) == 1) 
-    % MAP is assumed to be a row-vector, so makes it as X
-    MAP = transpose(MAP);
+    % MAP is assumed to be a row-vector, so 
+    MAP = transpose(MAP); % Makes Y a column-vector as well
 end
 
 Y = MAP(X+1);

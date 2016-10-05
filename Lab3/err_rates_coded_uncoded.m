@@ -58,8 +58,8 @@ function [uncoded_BER, coded_BER] = err_rates_coded_uncoded(num_bits, Es_sigma2)
         
         % generate vector of random bits
         s =  randi(2, num_bits, 1) - 1;
-        [~, uncoded_BER(e)] = sol_transmit_bpsk(s, Es_sigma2(e));
-        [~, coded_BER(e)] = sol_transmit_coded_bpsk(s, Es_sigma2(e));       
+        [~, uncoded_BER(e)] = transmit_bpsk(s, Es_sigma2(e));
+        [~, coded_BER(e)] = transmit_coded_bpsk(s, Es_sigma2(e));       
 		
     end			
 	close(h); % close the progress bar when done

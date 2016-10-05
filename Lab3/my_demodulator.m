@@ -11,16 +11,16 @@ function [ Z ] = my_demodulator( Y, MAP )
 % 0 and M=length(MAP)-1.
 
 % Check row/column vector for Y
-[~, cols] = size(Y);
-transpose = 1;
-if cols == 1
-   transpose = 0;
-   Y = Y.'; % .' is the NON-CONJUGATE tranpose... (duhh !)
+[rows, ~] = size(Y);
+transpose_needed = 0;
+if rows == 1
+   transpose_needed = 1;
+   Y = transpose(Y);
 end
 
 M = length(MAP);
 length_Y = length(Y);
-Y_rep = repmat(Y.',1,M); % .' is the NON-CONJUGATE tranpose... (duhh !)
+Y_rep = repmat(Y, 1, M);
 MAP_rep = repmat(MAP, length_Y, 1);
 
 % Compute distances
@@ -30,8 +30,8 @@ distances = euclidean_distance(Y_rep, MAP_rep);
 
 Z = indice-1; %Since MAP values are from 0 and not 1
 
-if transpose
-    Z = Z.';
+if transpose_needed
+    Z = transpose(Z);
 end
 
 function distances = euclidean_distance(v1, v2)

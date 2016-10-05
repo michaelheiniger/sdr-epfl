@@ -12,13 +12,19 @@ if (not(is_number_integer(log2(sqrt(M)))) || M <= 1)
     error('M must be the square of a power of 2.');
 end
 
+% Computes the values of the points of the constellation that are farthest 
+% from the center
+max_coordinate = sqrt(M)-1;
 
-max_coordinate = (log2(M)-1)
+% Computes the grid containing the constellation points 
+% (space between 2 points is 2 in both real and imaginary axis)
+[Y,X] = ndgrid(max_coordinate:-2:-max_coordinate,-max_coordinate:2:max_coordinate);
 
-[X,Y] = ndgrid(max_coordinate:-1:-max_coordinate,-max_coordinate:max_coordinate)
+% Combining the two parts of the grid
+QAM = X + 1i*Y;
 
-
-
+% Return the grid as a vector
+C = reshape(QAM, 1, M);
 
 function result = is_number_integer(n)
     result = (mod(n,1) == 0);
