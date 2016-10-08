@@ -30,9 +30,9 @@ trellis = poly2trellis(constraint_length, [5 7]);
 S_coded = convenc(S, trellis);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Modulation and transmission over AWGN channel
+% Modulation, transmission over AWGN channel and demodulation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-BPSK = sol_pskmap(2);
+BPSK = my_pskmap(2);
 
 S_mod = my_modulator(S_coded, BPSK);
 S_mod_noisy = awgn(S_mod, Es_sigma2);
