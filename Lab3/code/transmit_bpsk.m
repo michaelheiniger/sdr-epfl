@@ -12,12 +12,18 @@ function [ S_EST, BER ] = transmit_bpsk( S, Es_sigma2 )
 % estimated by the receiver; BER is the bit error rate, i.e,
 % the fraction of bits that were received incorrectly.
 
-BPSK = my_pskmap(2);
+BPSK = my_pskmap(2); % Binary-PSK
 
+% Modulation
 S_mod = my_modulator(S, BPSK);
+
+% AWGN Channel simulation
 S_mod_noisy = awgn(S_mod, Es_sigma2);
+
+% Demodulation
 S_EST = my_demodulator(S_mod_noisy, BPSK);
 
+% Bit Error Rate calculation
 error_count = sum(S ~= S_EST);
 BER = error_count/length(S);
 

@@ -14,15 +14,15 @@ function [ Y ] = imgreduce( X, G, B )
 % the values to lie in the interval [0, 2^B-1] such that 0 corresponds
 % to black and 2^B-1 corresponds to white.
 
+if (B < 1) || (B > 8)
+    error('Invalid argument: B must be an integer in {1,2,...,8}');
+end
 
 % Downsampling by G in both dimensions
 X_ds = X(1:G:end,1:G:end);
 
-
+% Scaling
 Y = bitshift(X_ds, B-8);
-
-
-
 
 end
 

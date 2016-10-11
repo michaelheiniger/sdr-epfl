@@ -1,4 +1,5 @@
-clear;
+clear all;
+close all;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Tx/Rx common parameters
@@ -78,11 +79,11 @@ R = awgn(Z, snr);
 Y_rec = my_sufficientstatistics(R, H, USF) / sqrt(Es/2);
 
 % Display the recovered symbol on an M-QAM plane
-sPlotFig = scatterplot(Y_rec ,1,0,'g.');
-set(gca, 'XAxisLocation', 'origin')
-set(gca, 'YAxisLocation', 'origin')
-hold on;
-scatterplot(my_qammap(M),1,0,'k*',sPlotFig);
+% sPlotFig = scatterplot(Y_rec ,1,0,'g.');
+% set(gca, 'XAxisLocation', 'origin')
+% set(gca, 'YAxisLocation', 'origin')
+% hold on;
+% scatterplot(my_qammap(M),1,0,'k*',sPlotFig);
 
 % Recover the symbols
 X_rec_dec = my_demodulator(Y_rec, MAP);
@@ -96,7 +97,9 @@ BER = absolute_errors/(size(X_bits,1) * size(X_bits,2)) % Actual
 Pb = qfunc(sqrt(EsNo)) % Theoretical
 
 % Symbol Error Calculation for 4-QAM
-absolute_symbol_errors = sum(X_dec ~= X_rec_dec);
+size(X_dec)
+size(X_rec_dec)
+absolute_symbol_errors = sum(transpose(X_dec) ~= X_rec_dec);
 SER = absolute_symbol_errors/length(X_dec) % Actual
 Ps = 2*qfunc(sqrt(EsNo)) - qfunc(sqrt(EsNo))*qfunc(sqrt(EsNo)) % Theoretical
 

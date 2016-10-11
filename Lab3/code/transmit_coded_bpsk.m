@@ -23,16 +23,16 @@ function [S_EST, BER] = transmit_coded_bpsk( S, Es_sigma2 )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 constraint_length = 3;
-%{'1 + x^1', '1 + x^1 + x^2'}
+% Corresponding polynomial {'1 + x^1', '1 + x^1 + x^2'}
 trellis = poly2trellis(constraint_length, [5 7]);
 
-% Coding of S using previously specified convolutional code
+% Convolutional encoding of S
 S_coded = convenc(S, trellis);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Modulation, transmission over AWGN channel and demodulation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-BPSK = my_pskmap(2);
+BPSK = my_pskmap(2); % Binary-PSK
 
 S_mod = my_modulator(S_coded, BPSK);
 S_mod_noisy = awgn(S_mod, Es_sigma2);
@@ -49,6 +49,7 @@ dectype = 'soft';
 nsdec = 1;
 S_EST = vitdec(S_demod, trellis, tblen, opmode, dectype, nsdec);
 
+% Bit Error Rate calculation
 error_count = sum(S ~= S_EST);
 BER = error_count/length(S);
 

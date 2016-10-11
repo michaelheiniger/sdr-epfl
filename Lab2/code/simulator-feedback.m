@@ -1,4 +1,5 @@
-clear;
+clear all;
+close all;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Tx/Rx common parameters
@@ -14,9 +15,9 @@ M = 4;
 MAP = my_qammap(M);
 
 % Basic Pulse (Root-Raised Cosine Function)
-BETA = 0.22; % Roll-off factor
-SPAN = 6; % ???
-SPS = 4; % ???
+BETA = 0.01; % Roll-off factor
+SPAN = 10; % ???
+SPS = 100; % ???
 H = rcosdesign(BETA, SPAN, SPS); % Already normalized
 
 % Nicolae Visualize the filter       
@@ -59,6 +60,9 @@ Y = my_modulator(X, MAP) * sqrt(Es/2); % Scales with energy per symbol Es
 
 % Association of symbols with pulses to get the samples to transmit
 Z = my_symbols2samples(Y, H, USF);
+length(Y)
+length(Z)
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Simulation of channel (AWGN)
@@ -81,11 +85,11 @@ R = awgn(Z, snr);
 Y_rec = my_sufficientstatistics(R, H, USF) / sqrt(Es/2);
 
 % Display the recovered symbol on an M-QAM plane
-sPlotFig = scatterplot(Y_rec ,1,0,'g.');
-set(gca, 'XAxisLocation', 'origin')
-set(gca, 'YAxisLocation', 'origin')
-hold on;
-scatterplot(my_qammap(M),1,0,'k*',sPlotFig);
+% sPlotFig = scatterplot(Y_rec ,1,0,'g.');
+% set(gca, 'XAxisLocation', 'origin')
+% set(gca, 'YAxisLocation', 'origin')
+% hold on;
+% scatterplot(my_qammap(M),1,0,'k*',sPlotFig);
 
 % Recover the symbols
 X_rec_dec = my_demodulator(Y_rec, MAP);
@@ -99,7 +103,7 @@ BER = absolute_errors/(size(X_bits,1) * size(X_bits,2)) % Actual
 Pb = qfunc(sqrt(EsNo)) % Theoretical
 
 % Symbol Error Calculation for 4-QAM
-absolute_symbol_errors = sum(X_dec ~= X_rec_dec);
+absolute_symbol_errors = sum(transpose(X_dec) ~= X_rec_dec);
 SER = absolute_symbol_errors/length(X_dec) % Actual
 Ps = 2*qfunc(sqrt(EsNo)) - qfunc(sqrt(EsNo))*qfunc(sqrt(EsNo)) % Theoretical
 
