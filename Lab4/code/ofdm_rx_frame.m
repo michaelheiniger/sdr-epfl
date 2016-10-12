@@ -16,12 +16,10 @@ ofdm_frame_width = length(rx_signal) / (num_carriers+prefix_length);
 ofdm_frame_ifft_prefix = reshape(rx_signal, num_carriers+prefix_length, ofdm_frame_width);
 
 % Remove cyclic prefix
-ofdm_frame_ifft = ofdm_frame_ifft_prefix(1:prefix_length,:);
+ofdm_frame_ifft = ofdm_frame_ifft_prefix(prefix_length+1:end,:);
 
 % Apply FFT to get the ofdm frame
 ofdm_frame_with_carriers = fft(ofdm_frame_ifft);
-
-number_ofdm_symbols = size(ofdm_frame_with_carriers,2);
 
 % Remove unused subcarriers values
 ofdm_frame = ofdm_frame_with_carriers(num_zeros+1:end-num_zeros,:);
