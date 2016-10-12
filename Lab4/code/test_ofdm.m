@@ -37,8 +37,8 @@ data_symbols = my_modulator(data, constel_data);
 E_s=var(constel_data,1);  % average energy of data symbols; '1' parameter to use the biased estimator
 
 % Generate OFDM signal to be transmitted
-tx_signal = sol_ofdm_tx_frame(num_carriers, num_zeros, prefix_length, preamble_symbols, data_symbols); % Comment this line when you have finished coding the ofdm_tx_frame.m
-%tx_signal = ofdm_tx_frame(num_carriers, num_zeros, prefix_length, preamble_symbols, data_symbols); % Uncomment this line when you have finished coding the ofdm_tx_frame.m
+% tx_signal = sol_ofdm_tx_frame(num_carriers, num_zeros, prefix_length, preamble_symbols, data_symbols); % Comment this line when you have finished coding the ofdm_tx_frame.m
+tx_signal = ofdm_tx_frame(num_carriers, num_zeros, prefix_length, preamble_symbols, data_symbols); % Uncomment this line when you have finished coding the ofdm_tx_frame.m
 E_tx=var(tx_signal); % power of transmitted signal
 
 % Channel
@@ -51,14 +51,14 @@ channel_length = prefix_length+1; % it should fulfill channel_length <= prefix_l
 
 
 %  multipath channel described in class
-amplitudes = randn(1,4); %Gaussian distribution, N(0,1) 
+% amplitudes = randn(1,4); %Gaussian distribution, N(0,1) 
 delays = [0 0.5 1.2 1.4];
-h = create_multipath_channel_filter(amplitudes, delays);
+% h = create_multipath_channel_filter(amplitudes, delays);
 
 % simple channel 
 % which just adds WGN (non frequency selective channel, i.e, no ISI).
 % to use it, uncomment the following line
-% h = [1 zeros(1,channel_length-1)]; 
+h = [1 zeros(1,channel_length-1)]; 
 
 % normalize impulse response
 h = h/norm(h);
@@ -69,7 +69,6 @@ end
 
 % convolve tx_signal with channel impulse response
 rx_signal = conv( tx_signal,h);
-
 
 % add AWGN
 sigma = 10^(-SNR/20) * sqrt(E_tx);

@@ -26,13 +26,12 @@ if ps_cols ~= 1
     preamble_symbols = transpose(preamble_symbols); % Want a column-vector
 end
 
-ofdm_symbol_length = num_carriers;
 ofdm_useful_length = num_carriers - 2*num_zeros;
 
 % Add zeros at the end of the data symbols to make it an integer multiple
 % of the useful capacity of an ofdm symbol
-number_zeros_to_pad = ceil(length(data_symbols) / ofdm_useful_length)*ofdm_symbol_length - length(data_symbols);
-data_symbols_padded = [data_symbols, zeros(1, number_zeros_to_pad)];
+num_zeros_to_pad = ceil(length(data_symbols) / ofdm_useful_length)*ofdm_useful_length - length(data_symbols);
+data_symbols_padded = [data_symbols; zeros(num_zeros_to_pad, 1)];
 
 % reshape the data symbols into a matrix
 data_symbols_matrix_width = length(data_symbols_padded)/ofdm_useful_length;
@@ -44,7 +43,7 @@ data_symbols_preamble_matrix = [preamble_symbols, data_symbols_matrix];
 % Add lines of 0 on top and bottom of the data sybol matrix for the
 % non-used subcarriers. Note: The +1 is here to take into account the
 % preamble symbol
-ofdm_frame = [ zeros(num_zeros,data_symbols_matrix_width+1); data_symbols_preamble_matrix; zeros(num_zeros,data_symbols_matrix_width+1)];
+ofdm_frame = [zeros(num_zeros,data_symbols_matrix_width+1); data_symbols_preamble_matrix; zeros(num_zeros,data_symbols_matrix_width+1)];
 
 % Apply IFFT on ofdm frame
 ofdm_frame_ifft = ifft(ofdm_frame);
@@ -53,6 +52,11 @@ ofdm_frame_ifft = ifft(ofdm_frame);
 cyclic_prefix = ofdm_frame_ifft(end-prefix_length+1:end,:);
 
 % Add cyclic prefix
-tx_signal = [cyclic_prefix ;ofdm_frame_ifft];
+ofdm_frame_ifft_prefix = [cyclic_prefix ;ofdm_frame_ifft];
+
+total_number_symbols_to_transmit = size(ofdm_frame_ifft_prefix,1)*size(ofdm_frame_ifft_prefix,2);
+
+% Reshape to output a column-vector
+tx_signal = reshape(ofdm_frame_ifft_prefix, total_number_symbols_to_transmit,1);
 
 end
