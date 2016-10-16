@@ -1,6 +1,5 @@
 % TEST_OFDM Script to test the OFDM transmitter / channel / receiver
 
-
 clear; close all; 
 clc
 
@@ -23,13 +22,11 @@ constel_preamble = my_qammap(M_preamble);
 constel_data = my_qammap(M_data);
 % constel_data = constel_data /  var(constel_data,1);  '1' parameter to use the biased estimator
 
-% Transmitter
+% TRANSMITTER
 % Generate preamble and data
 preamble = randi([0, M_preamble-1], [num_useful_carriers, 1]);
 preamble_symbols = my_modulator(preamble, constel_preamble);
 %preamble_symbols=ones(size(preamble_symbols));
-
-
 
 data = randi([0, M_data-1], [num_useful_carriers * (num_ofdm_symbols-1), 1]);
 data_symbols = my_modulator(data, constel_data);
@@ -37,28 +34,34 @@ data_symbols = my_modulator(data, constel_data);
 E_s=var(constel_data,1);  % average energy of data symbols; '1' parameter to use the biased estimator
 
 % Generate OFDM signal to be transmitted
-% tx_signal = sol_ofdm_tx_frame(num_carriers, num_zeros, prefix_length, preamble_symbols, data_symbols); % Comment this line when you have finished coding the ofdm_tx_frame.m
-tx_signal = ofdm_tx_frame(num_carriers, num_zeros, prefix_length, preamble_symbols, data_symbols); % Uncomment this line when you have finished coding the ofdm_tx_frame.m
+tx_signal = sol_ofdm_tx_frame(num_carriers, num_zeros, prefix_length, preamble_symbols, data_symbols); % Comment this line when you have finished coding the ofdm_tx_frame.m
+% tx_signal = ofdm_tx_frame(num_carriers, num_zeros, prefix_length, preamble_symbols, data_symbols); % Uncomment this line when you have finished coding the ofdm_tx_frame.m
 E_tx=var(tx_signal); % power of transmitted signal
 
 % Channel
 
 channel_length = prefix_length+1; % it should fulfill channel_length <= prefix_length+1
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OPTION 1 for h - RANDOM H
 % random impulse response for test purposes
-%h = 1/sqrt(2) * (randn(1,channel_length) + 1i*randn(1,channel_length)); 
-%h=randn(1,channel_length);
+% h = 1/sqrt(2) * (randn(1,channel_length) + 1i*randn(1,channel_length)); 
+% h=randn(1,channel_length);
 
-
-%  multipath channel described in class
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OPTION 2 for h - MULTIPATH PROPAGATION CHANNEL (ISI)
+% multipath channel described in class
 % amplitudes = randn(1,4); %Gaussian distribution, N(0,1) 
 delays = [0 0.5 1.2 1.4];
 % h = create_multipath_channel_filter(amplitudes, delays);
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OPTION 3 for h - SIMPLE AWGN CHANNEL (no ISI)
 % simple channel 
 % which just adds WGN (non frequency selective channel, i.e, no ISI).
 % to use it, uncomment the following line
-h = [1 zeros(1,channel_length-1)]; 
+h = [1 zeros(1,channel_length-1)];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % normalize impulse response
 h = h/norm(h);
@@ -76,16 +79,16 @@ noise = sigma/sqrt(2)* (randn(size(rx_signal)) + 1i*randn(size(rx_signal)));
 
 rx_signal_noisy = rx_signal + noise;
 
-% Receiver
+% RECEIVER 
 Rf = sol_ofdm_rx_frame(rx_signal_noisy, num_carriers, num_zeros, prefix_length); % Comment this line when you have finished coding the ofdm_rx_frame.m
-%Rf = ofdm_rx_frame(rx_signal_noisy, num_carriers, num_zeros, prefix_length); % Uncomment this line when you have finished coding the ofdm_rx_frame.m
+% Rf = ofdm_rx_frame(rx_signal_noisy, num_carriers, num_zeros, prefix_length); % Uncomment this line when you have finished coding the ofdm_rx_frame.m
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
 %Channel coefficient estimation
 
 % h known
 lambda1 = sol_channel_est1(num_carriers, num_zeros, h); % Comment this line when you have finished coding the channel_est1.m
-%lambda1 = channel_est1(num_carriers, num_zeros, h); % Uncomment this line when you have finished coding the channel_est1.m
+% lambda1 = channel_est1(num_carriers, num_zeros, h); % Uncomment this line when you have finished coding the channel_est1.m
 
 % delays and variances known
 sigma2=num_carriers*sigma^2; %the fft transform increases the noise variance!

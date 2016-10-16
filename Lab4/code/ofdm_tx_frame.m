@@ -46,7 +46,7 @@ data_symbols_preamble_matrix = [preamble_symbols, data_symbols_matrix];
 ofdm_frame = [zeros(num_zeros,data_symbols_matrix_width+1); data_symbols_preamble_matrix; zeros(num_zeros,data_symbols_matrix_width+1)];
 
 % Apply IFFT on ofdm frame
-ofdm_frame_ifft = ifft(ofdm_frame);
+ofdm_frame_ifft = ifft(ofdm_frame, num_carriers);
 
 % Get the part of the matrix to be used as prefix
 cyclic_prefix = ofdm_frame_ifft(end-prefix_length+1:end,:);

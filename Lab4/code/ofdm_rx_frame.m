@@ -12,7 +12,10 @@ function Rf = ofdm_rx_frame(rx_signal, num_carriers, num_zeros, prefix_length)
 %   removing the cyclic prefix we go back to frequency domain and also
 %   remove the zero carriers.
 
-ofdm_frame_width = length(rx_signal) / (num_carriers+prefix_length);
+ofdm_frame_width = (length(rx_signal) / (num_carriers+prefix_length))
+num_carriers
+prefix_length
+size(rx_signal)
 ofdm_frame_ifft_prefix = reshape(rx_signal, num_carriers+prefix_length, ofdm_frame_width);
 
 % Remove cyclic prefix

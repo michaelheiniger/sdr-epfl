@@ -10,6 +10,7 @@ function lambda = channel_est1(num_carriers, num_zeros, h)
 %   contains num_carriers-2*num_zeros elements
 
 % Get the subcarriers coefficients
+size(h)
 eigenvalues = eig(h);
 
 % Removes the first num_zeros and last num_zeros values
