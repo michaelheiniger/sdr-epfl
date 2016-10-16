@@ -8,7 +8,7 @@ function lambda = channel_est3(Rf, num_carriers, num_zeros, preamble_symbols, si
 %   NUM_CARRIERS: number of subcarriers (FFT/IFFT size)
 %   NUM_ZEROS: number of zero carriers at either end of the spectrum 
 %   PREAMBLE_SYMBOLS: the training sequence
-%   DELAY: vector containing the delay for eah path in the multipath filter
+%   DELAY: vector containing the delay for each path in the multipath filter
 %   SIGMA^2: noise variance 
 
 %   LAMBDA: Column vector containing channel coefficients in the frequency domain
