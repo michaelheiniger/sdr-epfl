@@ -86,11 +86,8 @@ Rf = ofdm_rx_frame(rx_signal_noisy, num_carriers, num_zeros, prefix_length); % U
 %Channel coefficient estimation
 
 % h known
-lambda1 = sol_channel_est1(num_carriers, num_zeros, h); % Comment this line when you have finished coding the channel_est1.m
-lambda1_test = channel_est1(num_carriers, num_zeros, h); % Uncomment this line when you have finished coding the channel_est1.m
-
-lambda1(1:4)
-lambda1_test(1:4)
+% lambda1 = sol_channel_est1(num_carriers, num_zeros, h); % Comment this line when you have finished coding the channel_est1.m
+lambda1 = channel_est1(num_carriers, num_zeros, h); % Uncomment this line when you have finished coding the channel_est1.m
 
 % delays and variances known
 sigma2=num_carriers*sigma^2; %the fft transform increases the noise variance!
