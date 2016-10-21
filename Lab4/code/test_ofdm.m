@@ -9,7 +9,7 @@ num_zeros = 5;         % number of unsused carriers (at each end of the frequenc
 prefix_length = 25;    % length of the cyclic prefix
 num_ofdm_symbols = 10000; % number of OFDM symbols per frame (1 will be used to transmit the preamble and the rest for data)
 M_preamble = 4;        % we use 4-QAM for the preamble
-M_data = 64;           % we use 4-QAM for the data
+M_data = 4;           % we use 4-QAM for the data
 
 SNR = 25; % in dB
 
