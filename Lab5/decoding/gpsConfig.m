@@ -140,8 +140,8 @@ gpsc.bpsf = gpsc.bpw * gpsc.wpsf;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Data file directory
-gpsc.datadir = 'data'; %  ~/handson/2007/gps/data_nov2005';
-gpsc.resultsdir = 'data'; %  ~/handson/2007/gps/data_nov2005';
+gpsc.datadir = '../data'; %  ~/handson/2007/gps/data_nov2005';
+gpsc.resultsdir = '../data'; %  ~/handson/2007/gps/data_nov2005';
 
 % Number of samples per file
 gpsc.spf = 8179460;
