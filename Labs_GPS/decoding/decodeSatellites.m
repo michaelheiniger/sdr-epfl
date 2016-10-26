@@ -56,6 +56,8 @@ function [] = decodeSatellites()
         %%%% removed ;
         fprintf(1, 'Found first bit:\n');
         fprintf(1, '  sample position where the first bit starts = %d\n', tau);
+        fprintf(1, '\n');
+        fprintf(1, '\n');
 
         % initialize the variables to store the inner products, taus and nus        
         bitwiseInnerProductResults = zeros(1, maxNumberOfBits); 
