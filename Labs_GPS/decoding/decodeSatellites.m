@@ -77,6 +77,8 @@ function [] = decodeSatellites()
 
                 % at the beginning of a new block adjust tau and Doppler
                 [tau, doppler] = adjustTauAndDoppler(sat_number, tau, doppler);
+%                 fprintf(1, 'New tau and doppler estimates: tau: %f, doppler: %f.\n', tau, doppler);
+               
                 % Nicolae
                 store_doppler(sat, nbits+1:nbits+numberOfBitsPerBlock) =  doppler;
                 
@@ -94,6 +96,7 @@ function [] = decodeSatellites()
 
                 % Do the inner product 
                 [newBitwiseInnerProduct, initialPhi] = doInnerProductsBitByBit(numberOfBitsPerBlock, sat_number, doppler, tau, initialPhi);
+                
                 bitwiseInnerProductResults(nbits + 1:nbits + length(newBitwiseInnerProduct)) = newBitwiseInnerProduct; % append the newly decoded bits
 
                 % Append the corresponding taus: the first value is tau, the remaining values need to be computed using the duration of a bit.

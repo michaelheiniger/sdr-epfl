@@ -18,7 +18,7 @@ function [newTau, newDoppler] = adjustTauAndDoppler(sat_number, tau, doppler)
     newTau = adjustTau(sat_number, tau, deltaTau, doppler);
     
     % Now deal with the Doppler:
-    % The idea is to compute the inneer product at three points, namely at the
+    % The idea is to compute the inner product at three points, namely at the
     % current Doppler estimate as well as fCorr Hz before and fCorr Hz
     % after. We know (from experiments) that the top of the curve that plots
     % the absolute value of the inner product as a function of the Doppler can

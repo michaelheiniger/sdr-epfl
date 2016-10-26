@@ -27,7 +27,7 @@ bit_not_found = 1;
 while bit_not_found
    
     % Accounts for phase continuity since doppler is function of time
-    t = k*length(ca_seq)/fs:1/fs:((k+1)*length(ca_seq) - 1)/fs;
+    t = k*length(ca_seq)/fs:1/fs:((k+1)*length(ca_seq)-1)/fs;
     
     % Load next chunk and remove Doppler shift
     samples = getData(tau+k*length(ca_seq), tau+(k+1)*length(ca_seq)-1) .* exp(-1j*2*pi*doppler*t);
