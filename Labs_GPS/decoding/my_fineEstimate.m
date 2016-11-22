@@ -15,20 +15,21 @@
 % value of the inner product between the repeated C/A code
 % appropriately shifted and the Doppler corrected received signal.
 
-function [doppler_estim_f, ip_result] = fine_estimate(sat_number,tau_estim, doppler_estim_c, doppler_step)
+function [doppler_estim_f, ip_result] = my_fine_estimate(sat_number,tau_estim, doppler_estim_c, doppler_step)
 
 global gpsc;
 
-ca_seq = satCode(sat_number, 'fs');
-ca_seq = repmat(ca_seq, 1, 10);
+ca_one = satCode(sat_number, 'fs');
+N = 10; % Number of CA codes for the cross-correlation
+ca_repeat = repmat(ca_one, 1, N);
 
 % Load data taking into account the tau estimate (remove the first
 % tau_estim samples)
-samples = getData(tau_estim, tau_estim+2*length(ca_seq)-1);
+samples = getData(tau_estim, tau_estim+2*length(ca_repeat)-1);
 
 
-first_10_ca = samples(1:length(ca_seq));
-next_10_ca = samples(length(ca_seq)+1:end);
+data_seq_1 = samples(1:length(ca_repeat));
+data_seq_2 = samples(length(ca_repeat)+1:end);
 
 fs = gpsc.fs;
 
@@ -44,12 +45,12 @@ max_inner_product = 0;
 
 for k = doppler_shift
     % Remove doppler shift
-    shifted_first_10_ca = exp(-1j*2*pi*k*t).*first_10_ca;
-    shifted_next_10_ca = exp(-1j*2*pi*k*t).*next_10_ca;
+    shifted_first_10_ca = exp(-1j*2*pi*k*t).*data_seq_1;
+    shifted_next_10_ca = exp(-1j*2*pi*k*t).*data_seq_2;
         
     % Compute inner products (take absolute value for comparison)
-    inner_product_first = abs(shifted_first_10_ca * transpose(ca_seq));    
-    inner_product_next = abs(shifted_next_10_ca * transpose(ca_seq));
+    inner_product_first = abs(shifted_first_10_ca * transpose(ca_repeat));    
+    inner_product_next = abs(shifted_next_10_ca * transpose(ca_repeat));
     
     % Save doppler shift if it is the best so far
     if inner_product_first > inner_product_next && inner_product_first > max_inner_product

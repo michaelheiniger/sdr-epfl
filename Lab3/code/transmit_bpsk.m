@@ -17,8 +17,14 @@ BPSK = my_pskmap(2); % Binary-PSK
 % Modulation
 S_mod = my_modulator(S, BPSK);
 
+% Nicolae: checking the energy of the Tx signal
+Es_uncoded = var(S_mod);
+
 % AWGN Channel simulation
-S_mod_noisy = awgn(S_mod, Es_sigma2);
+% Nicolae: you need to use the parameter 'measured', since you do not know
+% if the energy of your signal is 1
+S_mod_noisy = awgn(S_mod, Es_sigma2,'measured');
+%S_mod_noisy = awgn(S_mod, Es_sigma2);
 
 % Demodulation
 S_EST = my_demodulator(S_mod_noisy, BPSK);

@@ -35,6 +35,7 @@ function c = satCode(s, freq)
     c = satCAcodes(s, :);
 
     % If desired, upsample the code sequence to sampling frequency
+    % by repeating each samples gpsc.spch (= samples/chip = 4) times
     if fs
         c = kron(c, ones(1, gpsc.spch));
     end

@@ -31,12 +31,16 @@ image_reduced_bits = img2bits(image_reduced, B);
 %(e) Display original (although reduced) and transmitted images (with
 % uncoded and coded schemes)
 figure('Position', [100, 100, 1200, 500]);
-subplot(1,3,1),imshow(image_reduced);
+subplot(1,3,1), imshow(image_reduced, [0 2^B]); % Nicolae imshow(image_reduced);
 title('Original (reduced)');
-subplot(1,3,2),imshow(bits2img(S_EST_uncoded, B, img_width, img_height));
+subplot(1,3,2),imshow(bits2img(S_EST_uncoded, B, img_width, img_height), [0 2^B]);
 title('Transmitted over AWGN - uncoded');
-subplot(1,3,3),imshow(bits2img(S_EST_coded, B, img_width, img_height));
+% Nicolae
+xlabel(sprintf('E_s/\\sigma^2=%0.1f, BER=%0.1e', Es_sigma2, UNCODED_BER));
+
+subplot(1,3,3),imshow(bits2img(S_EST_coded, B, img_width, img_height), [0 2^B]);
 title('Transmitted over AWGN - conv. coded');
+xlabel(sprintf('E_s/\\sigma^2=%0.1f, BER=%0.1e', Es_sigma2, CODED_BER));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Note: Based on the resulting BERs (uncoded is better than coded), it

@@ -35,9 +35,18 @@ S_coded = convenc(S, trellis);
 BPSK = my_pskmap(2); % Binary-PSK
 
 S_mod = my_modulator(S_coded, BPSK);
-S_mod_noisy = awgn(S_mod, Es_sigma2);
+% Nicolae: checking the energy of Tx signal
+Es_coded = var(S_mod);
+% Nicolae: it is always good to check the energy of Tx and add the
+% parameter 'measured'. Just to avoid surprises. In this case the energy is
+% indeed 1.
+S_mod_noisy = awgn(S_mod, Es_sigma2,'measured');
 
-S_demod = my_demodulator(S_mod_noisy, BPSK);
+% Nicolae: you do not do demodulation here because otherwise you loose all
+% the power of the Viterbi (ML) decoding. Demodulation implies taking
+% decisions, and we do not want that.
+S_demod = S_mod_noisy;
+%S_demod = my_demodulator(S_mod_noisy, BPSK);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Viterbi decoding
@@ -45,9 +54,13 @@ S_demod = my_demodulator(S_mod_noisy, BPSK);
 
 tblen = 15;
 opmode = 'trunc';
-dectype = 'soft';
-nsdec = 1;
-S_EST = vitdec(S_demod, trellis, tblen, opmode, dectype, nsdec);
+%dectype = 'soft';
+%nsdec = 1;
+
+% Nicolae: you had to use the 'unquant' option for decoding, which tells
+% the decoder that you pass directly the values from the channel
+S_EST = vitdec(S_demod, trellis, tblen, opmode, 'unquant');
+%S_EST = vitdec(S_demod, trellis, tblen, opmode, dectype, nsdec);
 
 % Bit Error Rate calculation
 error_count = sum(S ~= S_EST);
