@@ -15,25 +15,26 @@ global gpsc;
 
 fs = gpsc.fs;
 
-ca_seq = satCode(sat_number, 'fs'); % One C/A code
+ca_code = satCode(sat_number, 'fs'); % One C/A code
 
 % Do iteration of first chunk outside of for-loop to initialize previous_phase
-t = 0:1/fs:(length(ca_seq)-1)/fs;
-samples = getData(tau, tau+length(ca_seq)-1) .* exp(-1j*2*pi*doppler*t);
+t = 0:1/fs:(length(ca_code)-1)/fs;
+samples = getData(tau, tau+length(ca_code)-1) .* exp(-1j*2*pi*doppler*t);
 
-previous_phase = angle(ca_seq * transpose(samples));
+previous_phase = angle(ca_code * transpose(samples));
 k = 1; % Count of C/A code checked until bit changes
 bit_not_found = 1;
 while bit_not_found
    
     % Accounts for phase continuity since doppler is function of time
-    t = k*length(ca_seq)/fs:1/fs:((k+1)*length(ca_seq)-1)/fs;
+    t = k*length(ca_code)/fs:1/fs:((k+1)*length(ca_code)-1)/fs;
     
     % Load next chunk and remove Doppler shift
-    samples = getData(tau+k*length(ca_seq), tau+(k+1)*length(ca_seq)-1) .* exp(-1j*2*pi*doppler*t);
-
+    samples = getData(tau+k*length(ca_code), tau+(k+1)*length(ca_code)-1);
+    dc_data = samples .* exp(-1j*2*pi*doppler*t);
+    
     % Compute the phase of the current inner product
-    current_phase = angle(ca_seq * transpose(samples));
+    current_phase = angle(ca_code * conj(transpose(dc_data)));
 
     phase_diff = previous_phase - current_phase;
     
@@ -47,6 +48,6 @@ end
 % Accounts for the initial tau and for the possible skipped previous full bits
 % (The -1 is due to the fact that k is incremented by 1 after the bit is
 % found)
-tau_bit = tau + mod((k-1)*length(ca_seq), 20*length(ca_seq));
+tau_bit = tau + mod((k-1)*length(ca_code), gpsc.cpb*length(ca_code));
 
 end

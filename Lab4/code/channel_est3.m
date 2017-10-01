@@ -8,7 +8,6 @@ function lambda = channel_est3(Rf, num_carriers, num_zeros, preamble_symbols, si
 %   NUM_CARRIERS: number of subcarriers (FFT/IFFT size)
 %   NUM_ZEROS: number of zero carriers at either end of the spectrum 
 %   PREAMBLE_SYMBOLS: the training sequence
-%   DELAY: vector containing the delay for each path in the multipath filter
 %   SIGMA^2: noise variance 
 
 %   LAMBDA: Column vector containing channel coefficients in the frequency domain
@@ -16,8 +15,9 @@ function lambda = channel_est3(Rf, num_carriers, num_zeros, preamble_symbols, si
 
 S=diag(preamble_symbols);
 Kz=diag(sigma2*ones(num_carriers-2*num_zeros,1));
-Y=Rf(:,1);
-Ydata=Rf(:,2:end);
+
+Y=Rf(:,1); % Get the received preamble OFDM symbol
+Ydata=Rf(:,2:end); % Get the other received OFDM symbols
 
  corMat=zeros(size(Ydata));
  for i=1:size(Ydata,2)

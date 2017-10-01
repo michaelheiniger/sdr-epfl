@@ -80,10 +80,10 @@ function s = my_establishParity(ws)
         end
         
         % Compute parity bits D25,...,D30
-        parity = [word(1:DBPW), D29_prev, D30_prev] * H;
+        parity = mod([word(1:DBPW), D29_prev, D30_prev] * H, 2);
         
         % Check computed parity bits with received parity bits
-        if (sum(parity ~= word(DBPW+1:end)) == 0)
+        if (sum(parity ~= word(DBPW+1:end)) > 0)
            passed = false;
         end
         

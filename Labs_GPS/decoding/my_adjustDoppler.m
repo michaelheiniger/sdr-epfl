@@ -19,18 +19,19 @@ function new_doppler = my_adjustDoppler(sat_number, tau, doppler, fcorr)
 global gpsc; 
 fs = gpsc.fs;
 
-% % Now that tau has been updated, we know that the following 20 C/A codes
+% Now that tau has been updated, we know that the following 20 C/A codes
 % are about the same bit.
-ca_seq = satCode(sat_number, 'fs'); % One C/A codesize(ca_seq)
-ca_seq_20 = repmat(ca_seq, 1, 20);
+ca_code = satCode(sat_number, 'fs'); % One C/A
+ca_rep = repmat(ca_code, 1,  gpsc.cpb);
 
 doppler_shifts = [doppler-fcorr, doppler, doppler+fcorr]; 
 inner_products = zeros(length(doppler_shifts), 1);
 
-t = 0:1/fs:(length(ca_seq_20)-1)/fs;
-samples = getData(tau, tau + length(ca_seq_20) - 1);
+t = 0:1/fs:(length(ca_rep)-1)/fs;
+samples = getData(tau, tau + length(ca_rep) - 1);
 for k = 1:length(doppler_shifts)
-    inner_products(k) = ca_seq_20 * transpose(samples .* exp(-1j*2*pi*doppler_shifts(k)*t));
+    samples_corrected = samples .* exp(-1j*2*pi*doppler_shifts(k)*t);
+    inner_products(k) = ca_rep * conj(transpose(samples_corrected));
 end
 
 d1 = doppler-fcorr;

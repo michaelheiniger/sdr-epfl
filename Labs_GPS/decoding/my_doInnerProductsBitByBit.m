@@ -16,25 +16,25 @@ global gpsc;
 
 fs = gpsc.fs;
 
-ca_seq = satCode(sat_number, 'fs'); % One C/A code
-ca_seq_20 = repmat(ca_seq, 1, 20);
+ca_code = satCode(sat_number, 'fs'); % One C/A code
+ca_repeat = repmat(ca_code, 1, gpsc.cpb);
 
 inner_products = zeros(1, n_bits);
 
 % No need to accounts for phase continuity in the time vector: 
 % initial phase is updated at every iteration
-t = 0:1/fs:(length(ca_seq_20)-1)/fs;
+t = 0:1/fs:(length(ca_repeat)-1)/fs;
 for k = 0:n_bits-1
     % Load 1 bit of data
-    samples = getData(tau+k*length(ca_seq_20), tau+(k+1)*length(ca_seq_20)-1);
+    samples = getData(tau+k*length(ca_repeat), tau+(k+1)*length(ca_repeat)-1);
     % Remove Doppler shift
     samples_wo_doppler = samples .* exp(-1j*(2*pi*doppler*t+initial_phi));
     
     % Save inner product
-    inner_products(k+1) = ca_seq_20 * transpose(samples_wo_doppler);
+    inner_products(k+1) = ca_repeat * transpose(samples_wo_doppler);
     
     % Update the phase: this is what ensures phase continuity
-    initial_phi = initial_phi + 2*pi*doppler*length(ca_seq_20)/fs;
+    initial_phi = initial_phi + 2*pi*doppler*length(ca_repeat)/fs;
 end
 
 next_initial_phi = initial_phi;

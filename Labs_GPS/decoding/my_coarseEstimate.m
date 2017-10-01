@@ -19,41 +19,41 @@
 % (In FINDSATELLITES() the satellites will be ordered according to the
 % strength of their IP_RESULT)
 
-function [doppler_estim, tau_estim, ip_result] = my_coarseEstimate(sat_number, doppler_step)
+function [doppler_est, tau_est, innerprod] = my_coarseEstimate(sat_number, doppler_step)
 
 global gpsc;
 
-ca_one = satCode(sat_number, 'fs');
+ca = satCode(sat_number, 'fs');
 N = 10; % Number of CA codes for the cross-correlation
-ca_repeat = repmat(ca_one, 1, N);
+ca_rep = repmat(ca, 1, N);
 
 % To be sure you get 10 full CAs
 % for each chunk of 10 CAs you need data of length 10*CA + CA - 1: in this
 % way you are sure you have 10 complete (and not more!) CA's
-samples = getData(1, 2*(length(ca_repeat) + gpsc.spc) - 2);
+samples = getData(1, 2*((N+1)*length(ca)-1));
 
 % Split loaded data into two disjoint chunks to see in which one 
 % the full 10 CA reside
-data_seq_1 = samples(1:length(ca_repeat) + gpsc.spc - 1);
-data_seq_2 = samples(length(ca_repeat) + gpsc.spc:end);
+data_1 = samples(1:(N+1)*length(ca) - 1);
+data_2 = samples((N+1)*length(ca):end);
 
 % Save the tau corresponding to the max correlation
 best_tau = 0;
 
 % Time axis used to correct for Doppler shift
-t = (0 : length(data_seq_1)-1) * gpsc.Ts;
+t = (0 : length(data_1)-1) * gpsc.Ts;
 
 % Range of Doppler shifts to try
-doppler_shift = -gpsc.maxdoppler/2:doppler_step:gpsc.maxdoppler/2;
+doppler_range = -gpsc.maxdoppler/2:doppler_step:gpsc.maxdoppler/2;
 
 % Save the value of the max correlation
 best_correlation = 0;
 
 % Save the value of the Doppler shift that gives the max correlation
-best_doppler_shift = 0;
+best_doppler_est = 0;
 
 % Exhaustive search of the best Doppler shift in the given range
-for k = doppler_shift
+for k = doppler_range
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Correct for Doppler: Remove Doppler shift 
@@ -61,35 +61,35 @@ for k = doppler_shift
     % in order to optimize the results since the reference signal and 
     % the received signal have different frequency due to Doppler shift
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    shifted_data_1 = exp(-1j*2*pi*k*t).*data_seq_1;
-    shifted_data_2 = exp(-1j*2*pi*k*t).*data_seq_2;
+    dc_data_1 = exp(-1j*2*pi*k*t).*data_1;
+    dc_data_2 = exp(-1j*2*pi*k*t).*data_2;
         
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Cross-correlation of reference signal with received signal to find
     % tau and synchronize on the sample level
-    % max() must be used since the CA code is multiplied by -1 or +1
+    % a(???? correct ???) abs() must be used since the CA code is multiplied by -1 or +1
     % and the reference sequence corresponds to +1
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % Data part 1
-    [R1, ~] = xcorr(shifted_data_1, ca_repeat);
+    [R1, ~] = xcorr(dc_data_1, ca_rep);
     
     % Tau cannot be < 0 since the max must be when overlap is complete
-    R1 = R1(length(shifted_data_1):end);
+    R1 = R1(length(dc_data_1):end);
     
     % Tau cannot be > Ta*fs where Ta is the time of a full CA code
-    R1 = R1(1:length(ca_repeat));
-    [max_corr_data_1, tau1] = max(abs(R1));
+    R1 = R1(1:length(ca_rep));
+    [max_corr_1, tau1] = max(abs(R1));
     
     % Data part 2
-    [R2, ~] = xcorr(shifted_data_2, ca_repeat);
+    [R2, ~] = xcorr(dc_data_2, ca_rep);
     
     % Tau cannot be < 0 since the max must be when overlap is complete
-    R2 = R2(length(shifted_data_2):end);
+    R2 = R2(length(dc_data_2):end);
     
     % Tau cannot be > Ta*fs where Ta is the time of a full CA code
-    R2 = R2(1:length(ca_repeat));
-    [max_corr_data_2, tau2] = max(abs(R2));
+    R2 = R2(1:length(ca_rep));
+    [max_corr_2, tau2] = max(abs(R2));
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Take the max of the correlation between the 2 disjoint parts of the 
@@ -98,30 +98,30 @@ for k = doppler_shift
     % the best value is saved and the tau and Doppler shifts estimates are
     % updated as well.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    if max_corr_data_1 > max_corr_data_2 % bit transition occurs in data part 2
-        if max_corr_data_1 > best_correlation
-            best_doppler_shift = k;
+    if max_corr_1 > max_corr_2 % bit transition occurs in data part 2
+        if max_corr_1 > best_correlation
+            best_doppler_est = k;
             best_tau = tau1;
-            best_correlation = max_corr_data_1;
+            best_correlation = max_corr_1;
         end
     else % bit transition occurs in data part 1
-        if max_corr_data_2 > best_correlation
-            best_doppler_shift = k;
+        if max_corr_2 > best_correlation
+            best_doppler_est = k;
             best_tau = tau2;
-            best_correlation = max_corr_data_2;
+            best_correlation = max_corr_2;
         end
     end
     
 end
 
-doppler_estim = best_doppler_shift;
+doppler_est = best_doppler_est;
 
 % Take modulo here to get the start of the first CA
-tau_estim = mod(best_tau, gpsc.spc);
+tau_est = mod(best_tau, gpsc.spc);
 
 %display(['Tau estim: ' num2str(best_tau)]);
 
-ip_result = abs(best_correlation);
+innerprod = abs(best_correlation);
 
 end
 

@@ -15,7 +15,7 @@
 % in the middle of the data sequence. You should use the fact that there is 
 % one preamble in every subframe (every 300 bits).
 
-function [s, idx] = my_removeExcessBits(bits) 
+function [s, index_first_subframe] = my_removeExcessBits(bits) 
 
 global gpsc;
 
@@ -27,7 +27,7 @@ p(p == 0) = 1;
 
 % Preamble extended to correlate with multiple subframes
 % N is the number of subframes used to correlate with the preamble
-N = floor(length(bits) / gpsc.bpsf); % Complete subframe
+N = floor(length(bits) / gpsc.bpsf)-1; % #Complete subframe
 p_ext = [p, zeros(1, gpsc.bpsf - length(p))];
 p_ext = repmat(p_ext, 1, N);
 
@@ -38,16 +38,16 @@ R = round(xcorr(bits, p_ext));
 R = R(length(bits):end);
 
 % Get the position of the highest peak
-[~, index] = max(abs(R));
+[~, pos] = max(abs(R));
 
-% 1 if bits are flipped
-bit_flipped = R(index) < 0;
+% 1 if value of correlation is negative => bits are flipped
+bit_flipped = R(pos) < 0;
 
-% Index of first subframe
-idx = index;
+% Return index of first subframe
+index_first_subframe = pos;
 
 % Remove bits at begining belonging to previous incomplete subframe
-bits = bits(index:end);
+bits = bits(index_first_subframe:end);
 
 % Number of complete subframes in the decoded bits
 complete_frame = floor(length(bits) / gpsc.bpsf);

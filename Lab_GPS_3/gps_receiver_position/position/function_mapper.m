@@ -22,5 +22,5 @@
 %       calcDeltaT = str2func('sol_calcDeltaT'); % uncomment to use the compiled solution
       
         % DOES NOT WORK
-%       satpos =  str2func('my_satpos'); % uncomment to use your own implementation
-      satpos = str2func('sol_satpos'); % uncomment to use the compiled solution
+      satpos =  str2func('my_satpos'); % uncomment to use your own implementation
+%       satpos = str2func('sol_satpos'); % uncomment to use the compiled solution

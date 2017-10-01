@@ -68,7 +68,7 @@ function [sp] = my_satpos(ephdata, t)
     r_k = a_s*(1-e*cos(E_k)) + delta_r_k;
 
     % Angle for ECEF conversion
-    Omega_k = Omega_0 + Omegadot*t_k - Omega_dot_e*t;  % TBC
+    Omega_k = Omega_0 + (Omegadot-Omega_dot_e)*t_k - Omega_dot_e*t_oe;  % TBC
     
     % Compute (x,y) position in orbit plane
     x_k_prim =  r_k*cos(u_k);
@@ -76,7 +76,7 @@ function [sp] = my_satpos(ephdata, t)
 
     % Convert to ECEF coordinates
     x_k =  x_k_prim*cos(Omega_k) - y_k_prim*cos(i_k)*sin(Omega_k);
-    y_k =  x_k_prim*sin(Omega_k) - y_k_prim*cos(i_k)*cos(Omega_k);
+    y_k =  x_k_prim*sin(Omega_k) + y_k_prim*cos(i_k)*cos(Omega_k);
     z_k =  y_k_prim*sin(i_k);
 
     % Put coordinates into vector

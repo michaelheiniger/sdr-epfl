@@ -15,7 +15,7 @@
 % value of the inner product between the repeated C/A code
 % appropriately shifted and the Doppler corrected received signal.
 
-function [doppler_estim_f, ip_result] = my_fine_estimate(sat_number,tau_estim, doppler_estim_c, doppler_step)
+function [doppler_estim_f, ip_result] = my_fineEstimate(sat_number,tau_estim, doppler_estim_c, doppler_step)
 
 global gpsc;
 
@@ -45,21 +45,20 @@ max_inner_product = 0;
 
 for k = doppler_shift
     % Remove doppler shift
-    shifted_first_10_ca = exp(-1j*2*pi*k*t).*data_seq_1;
-    shifted_next_10_ca = exp(-1j*2*pi*k*t).*data_seq_2;
+    dc_data1 = exp(-1j*2*pi*k*t).*data_seq_1;
+    dc_data2 = exp(-1j*2*pi*k*t).*data_seq_2;
         
     % Compute inner products (take absolute value for comparison)
-    inner_product_first = abs(shifted_first_10_ca * transpose(ca_repeat));    
-    inner_product_next = abs(shifted_next_10_ca * transpose(ca_repeat));
+    inner_product1 = abs(dc_data1 * conj(transpose(ca_repeat)));    
+    inner_product2 = abs(dc_data2 * conj(transpose(ca_repeat)));
     
     % Save doppler shift if it is the best so far
-    if inner_product_first > inner_product_next && inner_product_first > max_inner_product
+    if inner_product1 > inner_product2 && inner_product1 > max_inner_product
             best_doppler_shift = k;
-            max_inner_product = inner_product_first;        
-    else if inner_product_next > inner_product_first && inner_product_next > max_inner_product
+            max_inner_product = inner_product1;        
+    elseif inner_product2 > inner_product1 && inner_product2 > max_inner_product
             best_doppler_shift = k;
-            max_inner_product = inner_product_next;
-        end
+            max_inner_product = inner_product2;
     end
 end
 

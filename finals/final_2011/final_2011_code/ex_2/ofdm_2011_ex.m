@@ -43,7 +43,7 @@ sufficient_stats = [sufficient_stats(1:3,:); sufficient_stats(5,:);sufficient_st
 sufficient_stats = sufficient_stats(:);
 
 %determine the constellation for preamble and that for data
-% plot(sufficient_stats,'*') % => Modulation is 16-QAM
+plot(sufficient_stats,'*') % => Modulation is 16-QAM
 m = 16;
 
 %determine data bits

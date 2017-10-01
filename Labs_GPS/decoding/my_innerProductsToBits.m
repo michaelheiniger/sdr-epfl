@@ -27,9 +27,9 @@ for k = 2:length(bitwise_inner_product_results)
     phase_current_bit = angle(bitwise_inner_product_results(k));
     phase_diff = phase_current_bit - phase_prev_bit;
     
-    % abs phase diff. in [3/4pi;5/4pi] => current bit is different than
+    % abs phase diff. in (pi/2;3pi/2) => current bit is different than
     % previous bit
-    if (abs(phase_diff) > 3/4*pi) && (abs(phase_diff) < 5/4*pi)
+    if (abs(phase_diff) > pi/2) && (abs(phase_diff) < 3/2*pi)
         decoded_bits(k) = -previous_bit; 
         previous_bit = -previous_bit; % Previous bit is now different
     else 

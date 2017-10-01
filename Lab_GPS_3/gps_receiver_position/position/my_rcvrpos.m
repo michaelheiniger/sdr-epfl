@@ -89,7 +89,7 @@ function [lat, long, h] = my_rcvrpos(sat)
     
     % At this point we have the receiver position at t* in ECEF(t_tr). All
     % need to do is to find  the position in ECEF(t*)
-    rp_ecef = rotate_z(rp_ecef, gpsc.Omega_dot_e*b/gpsc.C); % TBC
+    rp_ecef = rotate_z(rp_ecef, gpsc.Omega_dot_e*b/); % TBC
 
     % Convert to WGS84
     [long, lat, h] = ecef2wgs84(rp_ecef(1), rp_ecef(2), rp_ecef(3));

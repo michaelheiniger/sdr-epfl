@@ -17,17 +17,19 @@ global gpsc;
 
 fs = gpsc.fs;
 
-ca_seq = satCode(sat_number, 'fs'); % One C/A code
+ca_code = satCode(sat_number, 'fs'); % One C/A code
+ca_rep = repmat(ca_code, 1, gpsc.cpb); % 1 bit worth of C/A codes concatenated
 
 best_tau = tau;
 max_inner_product = 0;
 for dtau = deltatau
     
     current_tau = tau+dtau;
-    t = 0:1/fs:(length(ca_seq)-1)/fs;
-    samples = getData(current_tau, current_tau+length(ca_seq)-1) .* exp(-1j*2*pi*doppler*t);
+    t = 0:1/fs:(length(ca_rep)-1)/fs;
+    samples = getData(current_tau, current_tau+length(ca_rep)-1);
+    dc_data = samples .* exp(-1j*2*pi*doppler*t);
     
-    inner_product = abs(ca_seq * transpose(samples));
+    inner_product = abs(ca_rep * conj(transpose(dc_data)));
     if inner_product > max_inner_product
        max_inner_product = inner_product;
        best_tau = current_tau;
